@@ -215,6 +215,7 @@ namespace Microsoft.AspNetCore.Http.Connections.Internal.Transports
 
                     // Get a frame from the application
 
+                    var advanceToEnd = false;
                     try
                     {
                         if (result.IsCanceled)
@@ -232,13 +233,17 @@ namespace Microsoft.AspNetCore.Http.Connections.Internal.Transports
                                     ? WebSocketMessageType.Binary
                                     : WebSocketMessageType.Text);
 
-                                if (WebSocketCanSend(socket))
+                                if (buffer.Length > 1000)
                                 {
-                                    await socket.SendAsync(buffer, webSocketMessageType);
-                                }
-                                else
-                                {
-                                    break;
+                                    if (WebSocketCanSend(socket))
+                                    {
+                                        await socket.SendAsync(buffer, webSocketMessageType);
+                                        advanceToEnd = true;
+                                    }
+                                    else
+                                    {
+                                        break;
+                                    }
                                 }
                             }
                             catch (Exception ex)
@@ -257,7 +262,11 @@ namespace Microsoft.AspNetCore.Http.Connections.Internal.Transports
                     }
                     finally
                     {
-                        _application.Input.AdvanceTo(buffer.End);
+                        if (advanceToEnd)
+                            _application.Input.AdvanceTo(buffer.End);
+                        else
+                            _application.Input.AdvanceTo(buffer.Start, buffer.End);
+                        advanceToEnd = false;
                     }
                 }
             }
