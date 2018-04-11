@@ -242,7 +242,7 @@ namespace Microsoft.AspNetCore.Http.Connections.Internal.Transports
 
                                         _application.Input.AdvanceTo(buffer.Start, buffer.End);
 
-                                        await AwaitableThreadPool.Yield();
+                                        await Task.Yield();
 
                                         var hasData = _application.Input.TryRead(out result);
                                         buffer = result.Buffer;
@@ -275,7 +275,7 @@ namespace Microsoft.AspNetCore.Http.Connections.Internal.Transports
                     }
                     finally
                     {
-                            _application.Input.AdvanceTo(buffer.End);
+                        _application.Input.AdvanceTo(buffer.End);
                     }
                 }
             }
