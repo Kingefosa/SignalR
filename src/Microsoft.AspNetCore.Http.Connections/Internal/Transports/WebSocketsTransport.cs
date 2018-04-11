@@ -313,11 +313,6 @@ namespace Microsoft.AspNetCore.Http.Connections.Internal.Transports
                     finally
                     {
                         _application.Input.AdvanceTo(buffer.End);
-                        Console.WriteLine($"Total bytes send: {totalBufferSize}");
-                        Console.WriteLine($"Average bytes per send: {totalBufferSize / totalSends}");
-                        Console.WriteLine($"Number of times second loop ran: {secondLoopRuns}");
-                        Console.WriteLine($"Total time Task.Delay took {watchTime}ms");
-                        Console.WriteLine($"Average time Task.Delay took per iteration {watchTime / secondLoopRuns}ms");
                     }
                 }
             }
@@ -335,6 +330,12 @@ namespace Microsoft.AspNetCore.Http.Connections.Internal.Transports
                 }
 
                 _application.Input.Complete();
+
+                Console.WriteLine($"Total bytes send: {totalBufferSize}");
+                Console.WriteLine($"Average bytes per send: {totalBufferSize / totalSends}");
+                Console.WriteLine($"Number of times second loop ran: {secondLoopRuns}");
+                Console.WriteLine($"Total time Task.Delay took {watchTime}ms");
+                Console.WriteLine($"Average time Task.Delay took per iteration {watchTime / secondLoopRuns}ms");
             }
 
         }
